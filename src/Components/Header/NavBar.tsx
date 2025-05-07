@@ -27,6 +27,7 @@ const NavBar = ({ flexBetween, selectedPage, setSelectedPage }: Props) => {
             />
           </div>
           <Button onClick={() => navigate('/login')}>Log In</Button>
+          <Button onClick={() => navigate('/register')}>Register</Button>
         </div>
       )}
       {!isAboveMediumScreens && (

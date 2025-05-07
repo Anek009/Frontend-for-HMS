@@ -1,49 +1,4 @@
-// import { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
-
-// const Login = () => {
-//   const [role, setRole] = useState('');
-//   const navigate = useNavigate();
-
-//   const handleLogin = () => {
-//     if (!role) {
-//       alert('Please select a role');
-//       return;
-//     }
-
-//     // Fake auth token and role saving (in real apps, you'd get this from an API)
-//     localStorage.setItem('userRole', role);
-
-//     // Redirect based on role
-//     if (role === 'Admin') navigate('/admin');
-//     else if (role === 'Doctor') navigate('/doctor');
-//     else if (role === 'Patient') navigate('/patient');
-//   };
-
-//   return (
-//     <div className="flex flex-col items-center justify-center min-h-screen p-4">
-//       <h1 className="text-3xl font-bold mb-6">Select Your Role</h1>
-//       <select
-//         value={role}
-//         onChange={(e) => setRole(e.target.value)}
-//         className="mb-4 px-4 py-2 border border-gray-300 rounded"
-//       >
-//         <option value="">-- Choose a role --</option>
-//         <option value="Admin">Admin</option>
-//         <option value="Doctor">Doctor</option>
-//         <option value="Patient">Patient</option>
-//       </select>
-//       <button
-//         onClick={handleLogin}
-//         className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
-//       >
-//         Continue
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default Login;
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -58,6 +13,7 @@ interface LoginFormValues {
 
 const Login = () => {
   const [role, setRole] = useState<Role>('patient');
+  const navigate = useNavigate();
 
   const initialValues: LoginFormValues = {
     userId: '',
@@ -81,7 +37,18 @@ const Login = () => {
         return '';
     }
   };
-
+  const getDashboardPath = (role: Role): string => {
+    switch (role) {
+      case 'admin':
+        return '/admin';
+      case 'doctor':
+        return '/doctor';
+      case 'patient':
+        return '/patient';
+      default:
+        return '/';
+    }
+  };
   const handleLogin = async (values: LoginFormValues) => {
     const loginData = {
       userId: values.userId,
@@ -93,7 +60,11 @@ const Login = () => {
     try {
       const response = await axios.post(apiUrl, loginData);
       console.log('Login successful:', response.data);
-      // TODO: redirect to respective dashboard or store token, etc.
+        // You can store token or user data here if needed
+      // localStorage.setItem('token', response.data.token);
+
+      // Redirect to role-specific dashboard
+      navigate(getDashboardPath(role));
     } catch (error) {
       console.error('Login failed:', error);
       alert('Login failed. Please check your credentials.');
